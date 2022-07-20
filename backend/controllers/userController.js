@@ -1,4 +1,4 @@
-import express from 'express';
+
 
 import User from '../models/userModel.js';
 import asyncHandler from 'express-async-handler';
@@ -44,15 +44,23 @@ const UserAuth = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
   
     const user = await User.findOne({ email });
-    if (user && (await user.matchPassword(password))) {
-      res.json({
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        isAdmin: user.isAdmin,
-        token: generateToken(user._id),
-      });
-    } else {
+    if (user.blocked) {
+      res.status(401)
+      throw new Error('Not Authorized, Blocked User.')
+    }
+    if (user && (await user.matchPassword(password))) {   
+          res.json({
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            isAdmin: user.isAdmin,
+            token: generateToken(user._id),
+          });
+        
+        }
+      
+          
+         else {
       res.status(401);
       throw new Error('invalid password or email');
     }
@@ -62,7 +70,7 @@ const UserAuth = asyncHandler(async (req, res) => {
 const getProfile = asyncHandler(async (req, res) => {
 
   const user = await User.findById(req.user._id);
-    console.log(req.user._id)
+ 
   if (user) {
     res.json({
       _id: user._id,
@@ -102,6 +110,57 @@ const updateUserProfile = asyncHandler(async (req, res) => {
   }
 });
 
+const getUsers = asyncHandler(async (req, res) => {
+
+  const users = await User.find({});
+  
+
+    res.json(users)
+      
+
+});
+
+const deleteUser = asyncHandler(async (req, res) => {
+
+  const user = await User.findById(req.params.id);
+   if(user){
+    await user.remove()
+    res.json({message:"user removed"})
+   }
+  else{
+    res.status(404);
+    throw new Error('User not found');
+  }
+      
+
+});
+
+//block/unblock
+
+const blockUser = asyncHandler(async (req, res) => {
+  console.log(req.params.id)
+  const user = await User.findById(req.params.id);
+   if(user ){
+    if(user.blocked){
+      user.blocked=false
+      await user.save()
+    res.json({message:"user unblock"})
+    }
+    else{
+      user.blocked=true
+      await user.save()
+      res.json({message:"user blocked"})
+    }
+    
+   }
+   
+  else{
+    res.status(404);
+    throw new Error('User not found');
+  }
+      
+
+});
 
 
 
@@ -113,6 +172,4 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 
 
 
-
-
-export { UserAuth, getProfile,UserSignUP, updateUserProfile };
+export { UserAuth, getProfile,UserSignUP, updateUserProfile,getUsers ,deleteUser,blockUser};

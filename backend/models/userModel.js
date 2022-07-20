@@ -21,6 +21,11 @@ const userSchema=mongoose.Schema({
 
         required:true,
         default:false
+    },
+    blocked:{
+        type:Boolean,
+        require:true,
+        default:false
     }
 },{
     timestamp:true
