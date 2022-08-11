@@ -1,9 +1,10 @@
 import Order from '../models/orderModel.js';
 import asyncHandler from 'express-async-handler';
-
+import mongoose from 'mongoose'
 const addOrderItems = asyncHandler(async (req, res) => {
  
     const {
+        name,
     orderItems,
     shippingAddress,
     paymentMethod,
@@ -20,6 +21,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
     }
     else{
         const order= new Order({
+            name,
             orderItems,
             user:req.user._id,
             shippingAddress,
@@ -88,6 +90,30 @@ const getMyOrders = asyncHandler(async (req, res) => {
  
 
 })
+const getOrders = asyncHandler(async (req, res) => {
 
+    const orders = await Order.find({});
+    
+  
+      res.json(orders)
+        
+  
+  });
+  
 
-export{addOrderItems,getOrderById,updateOrderDetails,getMyOrders}
+  const markAsDelivered = asyncHandler(async (req, res, next) => {
+    const isIdValid = mongoose.Types.ObjectId.isValid(req.params.id)
+    if (isIdValid) {
+   
+      const product = await Order.findByIdAndUpdate(req.params.id, req.body, {
+        new: true
+      }).select('-password')
+  
+      res.json({ product: product })
+    } else {
+      next()
+    }
+  })
+  
+
+export{addOrderItems,getOrderById,updateOrderDetails,getMyOrders,getOrders,markAsDelivered}

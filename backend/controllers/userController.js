@@ -3,7 +3,7 @@
 import User from '../models/userModel.js';
 import asyncHandler from 'express-async-handler';
 import generateToken from '../utilies/generateToken.js';
-
+import mongoose from 'mongoose'
 //UserAuth
 const UserSignUP = asyncHandler(async (req, res) => {
   const {name, email, password } = req.body;
@@ -44,7 +44,7 @@ const UserAuth = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
   
     const user = await User.findOne({ email });
-    if (user.blocked) {
+    if (user.isDisabled) {
       res.status(401)
       throw new Error('Not Authorized, Blocked User.')
     }
@@ -137,30 +137,19 @@ const deleteUser = asyncHandler(async (req, res) => {
 
 //block/unblock
 
-const blockUser = asyncHandler(async (req, res) => {
-  console.log(req.params.id)
-  const user = await User.findById(req.params.id);
-   if(user ){
-    if(user.blocked){
-      user.blocked=false
-      await user.save()
-    res.json({message:"user unblock"})
-    }
-    else{
-      user.blocked=true
-      await user.save()
-      res.json({message:"user blocked"})
-    }
-    
-   }
-   
-  else{
-    res.status(404);
-    throw new Error('User not found');
+const updateUser = asyncHandler(async (req, res, next) => {
+  const isIdValid = mongoose.Types.ObjectId.isValid(req.params.id)
+  if (isIdValid) {
+ 
+    const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    }).select('-password')
+
+    res.json({ user: user })
+  } else {
+    next()
   }
-      
-
-});
+})
 
 
 
@@ -170,6 +159,4 @@ const blockUser = asyncHandler(async (req, res) => {
 
 
 
-
-
-export { UserAuth, getProfile,UserSignUP, updateUserProfile,getUsers ,deleteUser,blockUser};
+export { UserAuth, getProfile,UserSignUP, updateUserProfile,getUsers ,deleteUser,updateUser};

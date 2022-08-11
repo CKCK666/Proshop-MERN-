@@ -1,21 +1,21 @@
 import mongoose from "mongoose";
-const reviewSchema=mongoose.Schema({
-    name:{
-        type:String,
-        required:true
- },
- review:{
-     type:String,
-     required:true,
- },
- rating:{
-    type:Number,
-    required:true,
-},
+// const reviewSchema=mongoose.Schema({
+//     name:{
+//         type:String,
+//         // required:true
+//  },
+//  review:{
+//      type:String,
+//     //  required:true,
+//  },
+//  rating:{
+//     type:Number,
+//     // required:true,
+// },
 
-},{
-    timestamp:true
-})
+// },{
+//     timestamp:true
+// })
 
 const productSchema=mongoose.Schema({
     user:{
@@ -30,11 +30,11 @@ const productSchema=mongoose.Schema({
     },
     image:{
         type:String,
-        required:true,
+        // required:true,
        
         
     },
-    review:[reviewSchema],
+    // review:[reviewSchema],
     brand:{
         type:String,
         required:true
@@ -53,7 +53,7 @@ const productSchema=mongoose.Schema({
     },
     rating:{
         type:Number,
-        required:false,
+        // required:false,
         default:0
     },
     price:{
@@ -68,7 +68,7 @@ const productSchema=mongoose.Schema({
     },
     numReview:{
         type:Number,
-        required:true,
+        // required:true,
         default:0
     },
 },{

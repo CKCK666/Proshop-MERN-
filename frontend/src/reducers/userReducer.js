@@ -20,6 +20,9 @@ import {
   USER_DELETE_REQUEST,
   USER_DELETE_SUCCESS,
   USER_DELETE_FAIL,
+  USER_DISABLE_REQUEST,
+  USER_DISABLE_SUCCESS,
+  USER_DISABLE_FAIL,
 } from '../constants/userConstants';
 
 export const userReducer = (state = {}, action) => {
@@ -107,3 +110,16 @@ export const userDeleteReducer = (state = {}, action) => {
       return state;
   }
 };
+
+export const userDisableReducer = (state = {}, action) => {
+  switch (action.type) {
+    case USER_DISABLE_REQUEST:
+      return { loading: true }
+    case USER_DISABLE_SUCCESS:
+      return { loading: false, success: true }
+    case USER_DISABLE_FAIL:
+      return { loading: false, error: action.payload }
+    default:
+      return state
+  }
+}

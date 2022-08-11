@@ -22,11 +22,11 @@ const userSchema=mongoose.Schema({
         required:true,
         default:false
     },
-    blocked:{
-        type:Boolean,
-        require:true,
-        default:false
-    }
+    isDisabled: {
+        type: Boolean,
+        required: true,
+        default: false,
+      },
 },{
     timestamp:true
 })

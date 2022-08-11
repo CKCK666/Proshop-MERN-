@@ -7,7 +7,8 @@ import {Login }from "../actions/userAction"
 import { Button, Col, Form, Row } from 'react-bootstrap'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
-import { LinkContainer } from 'react-router-bootstrap'
+
+import { PRODUCT_LIST_RESET } from '../constants/productConstants'
 
 const LoginScreen = ({location}) => {
   const navigate=useNavigate()
@@ -21,16 +22,17 @@ const userLogin=useSelector(state=>state.userLogin)
 const{loading,error,userInfo}=userLogin
 
 
-   const redirect = "/"
-/
+
+
   useEffect(()=>{
+    dispatch({type:PRODUCT_LIST_RESET})
     if(userInfo){
       navigate("/")
     }
     else{
       navigate("/login")
     }
-  })
+  },[userInfo,dispatch,navigate])
  
   const submitHandler=(e)=>{
     e.preventDefault()

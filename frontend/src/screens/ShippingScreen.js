@@ -21,12 +21,12 @@ const ShippingScreen = () => {
   const [country, setCountry] = useState(shippingAddress.country);
 
   const submitHandler = (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    dispatch(saveShippingAddress({ address, city, pinCode, country })
+    dispatch(saveShippingAddress({ address, city, pinCode, country }))
      
     
-    )
+    
       navigate('/payment')
     
     

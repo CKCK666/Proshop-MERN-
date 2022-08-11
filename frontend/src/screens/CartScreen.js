@@ -1,7 +1,7 @@
 import React,{useEffect} from 'react'
 import {Link,useParams,useNavigate} from "react-router-dom"
 import {useDispatch,useSelector} from "react-redux"
-import {Row,Col,ListGroup,Image,Form,Button, Card, ListGroupItem} from "react-bootstrap"
+import {Row,Col,ListGroup,Image,Form,Button, Card} from "react-bootstrap"
 import { addToCart,removeCartItem } from '../actions/cartAction'
 
 const CartScreen = () => {

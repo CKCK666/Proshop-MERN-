@@ -17,7 +17,10 @@ import { USER_LOGIN_REQUEST,
            USERS_LIST_RESET,
            USER_DELETE_REQUEST,
            USER_DELETE_SUCCESS,
-           USER_DELETE_FAIL} from "../constants/userConstants";
+           USER_DELETE_FAIL,
+           USER_DISABLE_REQUEST,
+           USER_DISABLE_SUCCESS,
+           USER_DISABLE_FAIL} from "../constants/userConstants";
 
 export const Login=(email,password)=>async(dispatch)=>{
 
@@ -25,11 +28,7 @@ export const Login=(email,password)=>async(dispatch)=>{
         dispatch({
            type:USER_LOGIN_REQUEST 
         })
-        const config={
-            headers:{
-                "context-type":"application/json"
-            }
-        }
+      
       const {data}= await axios.post("api/users/login",{email,password})
       dispatch({
         type:USER_LOGIN_SUCCESS ,
@@ -65,11 +64,7 @@ export const SignUp=(name,email,password)=>async(dispatch)=>{
         dispatch({
            type:USER_REGISTER_REQUEST
         })
-        const config={
-            headers:{
-                "context-type":"application/json"
-            }
-        }
+      
       const {data}= await axios.post("api/users",{name,email,password})
       dispatch({
         type:USER_REGISTER_SUCCESS ,
@@ -220,7 +215,7 @@ export const deleteUser=(id)=>async(dispatch,getState)=>{
                 Authorization:`Bearer ${userInfo.token}`
             },
         }
-      const {data}= await axios.delete(`/api/users/${id}`,config)
+      await axios.delete(`/api/users/${id}`,config)
    
       dispatch({
         type:USER_DELETE_SUCCESS,
@@ -241,3 +236,34 @@ export const deleteUser=(id)=>async(dispatch,getState)=>{
     }
 
 }
+
+export const disableUser = (id, disable) => async (dispatch, getState) => {
+    console.log(disable)
+    try {
+      dispatch({ type: USER_DISABLE_REQUEST })
+  
+      const {
+        userLogin: { userInfo },
+      } = getState()
+  
+      const config = { headers: { Authorization: `Bearer ${userInfo.token}` } }
+  
+      const { data } = await axios.patch(
+        `/api/users/${id}`,
+        { isDisabled: disable },
+        config
+      )
+      console.log(data, id, disable)
+  
+      dispatch({ type: USER_DISABLE_SUCCESS, payload: data })
+    } catch (error) {
+      dispatch({
+        type: USER_DISABLE_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message,
+      })
+    }
+  }
+  

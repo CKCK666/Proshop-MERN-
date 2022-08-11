@@ -19,7 +19,7 @@ import {
 
 import Message from '../components/Message';
 import Loader from "../components/Loader"
-import {  getOrderdetails ,payOrder} from '../actions/orderAction';
+import {  getOrderdetails ,payOrder,MakeDelivered} from '../actions/orderAction';
 import { ORDER_PAY_RESET } from '../constants/orderConstants';
 const OrderDetailsScreen = () => {
   
@@ -29,7 +29,8 @@ const OrderDetailsScreen = () => {
   const navigate = useNavigate();
   const[sdkReady,setSdkReady]=useState(false)
 
-
+  const userLogin=useSelector((state)=>state.userLogin)
+  const {userInfo}=userLogin
   const OrderDetails=useSelector((state)=>state.OrderDetails)
 
   const{order,loading,error}=OrderDetails
@@ -73,6 +74,11 @@ const OrderDetailsScreen = () => {
     }
   
   },[order,OrderId])
+
+  const deliverHandler=(id)=>{
+    dispatch(MakeDelivered(id))
+   
+  }
 
   const sumbitPaymentHandler=(paymentResult)=>{
     console.log(paymentResult)
@@ -177,19 +183,33 @@ const OrderDetailsScreen = () => {
                   <Col>{order.totalPrice}</Col>
                 </Row>
               </ListGroup.Item>
-              {!order.isPaid && (
-               <ListGroup.Item> 
-                   {loadingPay&&<Loader/>} 
-                   {!sdkReady? <Loader/>:( 
-                    <PayPalButton amount={order.totalPrice} onSuccess={sumbitPaymentHandler}/>
-                
-                    )} </ListGroup.Item>
-              ) }
-              <ListGroup.Item>
-                
+          
+                {userInfo.isAdmin && !order.isDelivered ? <ListGroup.Item>
+                  <Button type='button'
+                  className='btn btn-block'
+                  onClick={deliverHandler(order._id)}
+                  >Mark As Delivered</Button>
+                </ListGroup.Item>:<ListGroup.Item>
+
+                {!order.isPaid && !order.isDelivered ?(
+                    <ListGroup.Item> 
+                        {loadingPay&&<Loader/>} 
+                        {!sdkReady? <Loader/>:( 
+                         <PayPalButton amount={order.totalPrice} onSuccess={sumbitPaymentHandler}/>
+                     
+                         )} </ListGroup.Item>
+                   ):<h1></h1>}
+
+                </ListGroup.Item>}
+            
+             
+
+
+
               
-               
-              </ListGroup.Item>
+
+            
+           
 
              
             </ListGroup>
