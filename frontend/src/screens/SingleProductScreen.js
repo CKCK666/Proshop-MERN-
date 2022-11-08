@@ -43,7 +43,7 @@ const SingleProductScreen = () => {
         {loading ? (<h2>Loading....</h2>) : error ? (<h2>{error}</h2>):
         <Row>
           <Col md={6}>
-            <Image src={process.env.PUBLIC_URL + `${product.image}`}      alt={product.name} fluid/>
+            <Image src={product.image}     alt={product.name} fluid/>
           </Col>
           <Col md={3}>
              <ListGroup variant='flush' >

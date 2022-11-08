@@ -1,19 +1,24 @@
 import React from "react";
 import { Container ,Nav, Navbar, NavDropdown } from "react-bootstrap";
-
+import SearchBox from "./SearchBox";
 import { LinkContainer } from "react-router-bootstrap";
 import { useSelector,useDispatch } from 'react-redux'
 import { logout } from "../actions/userAction";
-import { useNavigate ,Link} from "react-router-dom";
-import { USERS_LIST_FAIL } from "../constants/userConstants";
+import { useNavigate ,} from "react-router-dom";
+import { USER_DETAILS_RESET } from "../constants/userConstants";
+
 const Header = () => {
  const dispatch=useDispatch()
- const navigate=useNavigate
+ const navigate=useNavigate()
 const userLogin=useSelector(state=>state.userLogin)
 const{ userInfo}=userLogin
+
 const logoutHandler=()=>{
   dispatch(logout())
-navigate("/login")
+  dispatch({type:USER_DETAILS_RESET})
+    navigate("/login")
+ 
+
  
 }
   return (
@@ -24,6 +29,10 @@ navigate("/login")
   <LinkContainer to="/">
   <Navbar.Brand >ProShop</Navbar.Brand>
   </LinkContainer>
+<SearchBox/>
+
+ 
+  
     
     <Navbar.Toggle aria-controls="basic-navbar-nav" />
     <Navbar.Collapse id="basic-navbar-nav">

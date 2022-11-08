@@ -7,6 +7,7 @@ import {SignUp }from "../actions/userAction"
 import { Button, Col, Form, Row } from 'react-bootstrap'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
+import { USER_DETAILS_RESET } from '../constants/userConstants'
 
 const RegisterScreen = () => {
   const navigate=useNavigate()
@@ -24,15 +25,18 @@ const userRegister=useSelector(state=>state.userRegister)
 const{loading,error,userInfo}=userRegister
 
 
-   const redirect = "/"
-// location.search ? location.search.split|("=")[1] :
+
+
   useEffect(()=>{
+   
     if(userInfo){
       navigate("/")
     }
     else{
-      navigate("/signup")
+      navigate("/signUp")
     }
+      
+    
   })
   
   const submitHandler=(e)=>{
@@ -97,9 +101,9 @@ const{loading,error,userInfo}=userRegister
 
      <Row className='py-3'>
        <Col>
-       New Customer?{" "}
-       <Link to={redirect ? `/register ? redirect=${redirect}` :"/register"}>
-         Register
+       Already have a account?
+       <Link to={"/login"}>
+         login
        </Link>
        </Col>
      </Row>

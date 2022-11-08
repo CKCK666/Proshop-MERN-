@@ -29,7 +29,7 @@ const productSchema=mongoose.Schema({
         require:true
     },
     image:{
-        type:String,
+        type:Object,
         // required:true,
        
         
@@ -42,7 +42,7 @@ const productSchema=mongoose.Schema({
     category:{
         type:String,
 
-        required:true,
+        // required:true,
         
     },
     description:{

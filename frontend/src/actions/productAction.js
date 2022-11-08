@@ -1,15 +1,15 @@
 import axios from "axios"
 
-import { PRODUCT_DELETE_FAIL, PRODUCT_DELETE_REQUEST, PRODUCT_DELETE_SUCCESS, PRODUCT_DETAILS_FAIL, PRODUCT_DETAILS_REQUEST, PRODUCT_DETAILS_SUCCESS, PRODUCT_EDIT_FAIL, PRODUCT_EDIT_REQUEST, PRODUCT_EDIT_SUCCESS, PRODUCT_LIST_FAIL, PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS } from "../constants/productConstants"
+import { PRODUCT_CREATE_FAIL, PRODUCT_CREATE_REQUEST, PRODUCT_CREATE_SUCCESS, PRODUCT_DELETE_FAIL, PRODUCT_DELETE_REQUEST, PRODUCT_DELETE_SUCCESS, PRODUCT_DETAILS_FAIL, PRODUCT_DETAILS_REQUEST, PRODUCT_DETAILS_SUCCESS, PRODUCT_EDIT_FAIL, PRODUCT_EDIT_REQUEST, PRODUCT_EDIT_SUCCESS, PRODUCT_LIST_FAIL, PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS } from "../constants/productConstants"
 
 
 
-export const listProducts=()=> async(dispatch)=>{
+export const listProducts=(keyword=" ")=> async(dispatch)=>{
     try {
         dispatch({
             type:PRODUCT_LIST_REQUEST
         })
-        const {data} = await axios.get("/api/products")
+        const {data} = await axios.get(`/api/products?keyword=${keyword}`)
 
         dispatch({
             type:PRODUCT_LIST_SUCCESS,
@@ -88,9 +88,9 @@ export const deleteProduct=(id)=>async(dispatch,getState)=>{
     }
 
 }
-export const updateProduct=(productsdetails,id)=>async(dispatch,getState)=>{
-
-
+export const updateProduct=(productsdetails)=>async(dispatch,getState)=>{
+ const {id} =productsdetails
+ console.log(id)
     try {
         dispatch({
            type:PRODUCT_EDIT_REQUEST
@@ -123,3 +123,42 @@ export const updateProduct=(productsdetails,id)=>async(dispatch,getState)=>{
     }
 
 }
+
+export const createProduct=(productsdetails)=>async(dispatch,getState)=>{
+
+
+    try {
+        dispatch({
+           type:PRODUCT_CREATE_REQUEST
+        })
+        const {userLogin:{userInfo}}=getState()
+        const config={
+            headers:{
+              
+                Authorization:`Bearer ${userInfo.token}`
+            },
+        }
+     await axios.post(`/api/products/createproduct`,productsdetails,config)
+   
+      dispatch({
+        type:PRODUCT_CREATE_SUCCESS,
+      
+
+        
+     })
+   
+
+    } catch (error) {
+       console.error(error)
+        dispatch({
+            type:PRODUCT_CREATE_FAIL,
+            payload:error.response && error.response.data.message 
+            ?
+            error.response.data.message : error.message,
+        })
+    }
+
+}
+
+
+

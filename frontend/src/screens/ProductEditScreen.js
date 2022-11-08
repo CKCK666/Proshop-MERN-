@@ -1,14 +1,13 @@
 import React from 'react';
 import { useState, useEffect ,} from 'react';
-import { Link, useNavigate ,useParams} from 'react-router-dom';
+import {  useNavigate ,useParams} from 'react-router-dom';
+import styled from "styled-components";
 
-import FormContainer from '../components/FormContainer';
 import { useSelector, useDispatch } from 'react-redux';
-import { SignUp } from '../actions/userAction';
-import { Table, Button, Col, Form, Row,Image } from 'react-bootstrap';
+
 import { listProductDetails,updateProduct} from '../actions/productAction';
 import Loader from "../components/Loader"
-import axios from 'axios';
+import { PrimaryButton } from "../components/CommonStyle";
 
 const ProductEditScreen = () => {
     const params=useParams()
@@ -17,48 +16,51 @@ const ProductEditScreen = () => {
   const productDetails=useSelector(state=>state.productDetails)
   const{loading,error,product}=productDetails
  
-
-  const [name, setName] = useState("");
+  const [productImg, setProductImg] = useState("");
   const [brand, setBrand] = useState("");
-  const [category, setCategory] = useState("");
-  const [description, setDescription] = useState("");
-  const [price, setPrice] = useState(0);
-  const [countInStock, setCountInStock] = useState(0);
-  const [fileInput, setFileInput] = useState("");
-  const [selectedFile,setSelectedFile]=useState("")
-const [previewSource,setPreviewSource]=useState("")
-// const uploadFileHandler=async(e)=>{
-// const file=e.target.files[0]
-// const formData=new FormData()
-// formData.append("image",file)
-// setUploading(true)
-// try {
-//   const config={
-//     header:{
-//       "Content-Type":"multipart/form-data"
-//     }
-//   }
-//   const{data}=await axios.post("/api/upload",formData,config)
-//   setImage(data)
-//   setUploading(false)
-// } catch (error) {
-//   console.error(error)
-//   setUploading(false)
-// }
-// }
-const FileInputHandler=async(e)=>{
-  const file= await e.target.files[0]
-  
-  previewFile(file)
-}
-const previewFile=(file)=>{
-  const reader=new FileReader()
-  reader.readAsDataURL(file)
-  reader.onloadend=()=>{
-    setPreviewSource(reader.result)
-  }
-  console.log(previewSource)
-}
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState("");
+  const [description, setDesc] = useState("");
+  const [  countInStock, setCountInStock] = useState("");
+
+  const handleProductImageUpload = (e) => {
+    const file = e.target.files[0];
+
+    TransformFileData(file);
+  };
+
+  const TransformFileData = (file) => {
+    const reader = new FileReader();
+
+    if (file) {
+      reader.readAsDataURL(file);
+      reader.onloadend = () => {
+        setProductImg(reader.result);
+      };
+    } else {
+      setProductImg("");
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+   await dispatch(
+      updateProduct({
+        id:params.id,
+        name,
+        brand,
+        price,
+        description,
+        image: productImg,
+        countInStock
+
+      })
+    )
+    navigate("/admin/productlist");
+  };
+
+
 useEffect(()=>{
   
   if(!product.name || product._id !== params.id){
@@ -69,8 +71,8 @@ useEffect(()=>{
     
   setName(product.name)
   setBrand(product.brand)
-  setCategory(product.category)
-  setDescription(product.description)
+  setProductImg(product.image)
+  setDesc(product.description)
   setPrice(product.price)
   setCountInStock(product.countInStock)
   }
@@ -78,119 +80,120 @@ useEffect(()=>{
     
   },[product.name,
      product._id, product.brand, 
-     product.category,
+    
       product.description,
        product.price, product.countInStock,
-        params.id, dispatch])
-
-  const submitHandler = (e) => {
-    e.preventDefault()
-   const productdetails={name,brand,category,description,price,countInStock}
+        params.id, dispatch,product.image])
 
 
-   dispatch(updateProduct(productdetails,product._id))
-     
-    
-    
-    
-    
-    
-  };
 
   return (
-    <FormContainer>
-     <Row>
-        <Col md={12}>
-        <Image alt='iamge' scr={process.env.PUBLIC_URL+`/images/mouse.jpg`} fluid rounded/>
-        </Col>
-      
-        </Row> 
-      <h1>EDIT PRODUCT</h1>
-      <Form onSubmit={submitHandler} className="mt-2">
-        <Form.Group controlId="name" className="mt-2">
-          <Form.Label>Name</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
-
-        <Form.Group controlId="brand" className="mt-2">
-          <Form.Label>Brand</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="brand"
-            value={brand}
-            onChange={(e) => setBrand(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
-        <Form.Group controlId="category" className="mt-2">
-          <Form.Label>Category</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="category"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
-        <Form.Group controlId="price" className="mt-2">
-          <Form.Label>Price</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="price"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
-      
-        <Form.Group controlId="image" className="mt-2">
-          <Form.Label>image</Form.Label>
-          <Form.Control
-            type="file"
-            placeholder="image"
-            value={fileInput}
-            onChange={FileInputHandler}
-          ></Form.Control>
-        
-        </Form.Group>
-         
-         
-        
-     
-
-        <Form.Group controlId="description" className="mt-2">
-          <Form.Label>Description</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
-        <Form.Group controlId="countInStock" className="mt-2">
-          <Form.Label>Stock</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="countInStock"
-            value={countInStock}
-            onChange={(e) => setCountInStock(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
-      
-        
-
-        <Button type="submit" variant="primary" className="my-4">
-          update
-        </Button>
-        
+    <StyledCreateProduct>
+    <StyledForm onSubmit={handleSubmit}>
+      <h3>Edit Product</h3>
+      <input
+        id="imgUpload"
+        accept="image/*"
+        type="file"
+        onChange={handleProductImageUpload}
+        required
+      />
+      <select value={product.brand} onChange={(e) => setBrand(e.target.value)} >
+        <option value="">Select Brand</option>
+        <option value="iphone">iPhone</option>
+        <option value="samsung">Samsung</option>
+        <option value="xiomi">Xiomi</option>
+        <option value="boat">Boat</option>
+        <option value="other">Other</option>
+      </select>
+      <input
+      value={name}
+        type="text"
+        placeholder="Name"
+        onChange={(e) => setName(e.target.value)}
        
+      />
+      <input
+      value={price}
+        type="number"
+        placeholder="Price"
+        onChange={(e) => setPrice(e.target.value)}
       
-      </Form>
-     
-    </FormContainer>
+      />
+      <input
+      value={description}
+        type="text"
+        placeholder="Short Description"
+        onChange={(e) => setDesc(e.target.value)}
+       
+      />
+
+          <input
+          value={countInStock}
+        type="number"
+        placeholder="Stock"
+        onChange={(e) => setCountInStock(e.target.value)}
+       
+      />
+
+      <PrimaryButton type="submit">
+    submit
+      </PrimaryButton>
+    </StyledForm>
+    <ImagePreview>
+      {productImg ? (
+        <>
+          <img src={productImg} alt="error!" />
+        </>
+      ) : (
+        <p>Product image upload preview will appear here!</p>
+      )}
+    </ImagePreview>
+  </StyledCreateProduct>
   );
 };
 
 export default ProductEditScreen;
+
+const StyledForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  max-width: 300px;
+  margin-top: 2rem;
+  select,
+  input {
+    padding: 7px;
+    min-height: 30px;
+    outline: none;
+    border-radius: 5px;
+    border: 1px solid rgb(182, 182, 182);
+    margin: 0.3rem 0;
+    &:focus {
+      border: 2px solid rgb(0, 208, 255);
+    }
+  }
+  select {
+    color: rgb(95, 95, 95);
+  }
+`;
+
+const StyledCreateProduct = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const ImagePreview = styled.div`
+  margin: 2rem 0 2rem 2rem;
+  padding: 2rem;
+  border: 1px solid rgb(183, 183, 183);
+  max-width: 300px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  color: rgb(78, 78, 78);
+  img {
+    max-width: 100%;
+  }
+`;

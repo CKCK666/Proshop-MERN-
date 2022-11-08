@@ -17,6 +17,8 @@ import UsersManage from "./screens/UsersManage";
 import ProductListScreen from "./screens/ProductListScreen";
 import ProductEditScreen from "./screens/ProductEditScreen";
 import OrderListScreen from "./screens/OrderListScreen";
+import CreateProductScreen from "./screens/CreateProductScreen";
+import SearchBox from "./components/SearchBox";
 const App = () => {
   return (
    
@@ -37,6 +39,8 @@ const App = () => {
     <Route path="/shipping" element={<ShippingScreen/>} />
     <Route path="/placeorder" element={<PlaceOrderScreen/>} />
      <Route path="/" element={<HomeScreen />} />
+     <Route path="/search/:keyword" element={<HomeScreen />} />
+     <Route path="/admin/createProduct" element={<CreateProductScreen/>} />
     
      <Route path="/product/:id" element={<SingleProductScreen/>} />
    

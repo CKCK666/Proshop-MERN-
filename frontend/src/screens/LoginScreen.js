@@ -10,7 +10,7 @@ import Loader from '../components/Loader'
 
 import { PRODUCT_LIST_RESET } from '../constants/productConstants'
 
-const LoginScreen = ({location}) => {
+const LoginScreen = () => {
   const navigate=useNavigate()
   const [email,setEmail]=useState("")
   const [password,setPassword]=useState("")
@@ -32,6 +32,8 @@ const{loading,error,userInfo}=userLogin
     else{
       navigate("/login")
     }
+     
+    
   },[userInfo,dispatch,navigate])
  
   const submitHandler=(e)=>{

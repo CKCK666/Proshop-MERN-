@@ -2,8 +2,8 @@ import React, {  useEffect } from 'react';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { Table, Button, Col, Row } from 'react-bootstrap';
-import { LinkContainer } from 'react-router-bootstrap';
+import { Table, Button, Col, Row,Image } from 'react-bootstrap';
+import { LinkContainer } from "react-router-bootstrap"
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 
@@ -17,7 +17,7 @@ const ProductListScreen = () => {
  
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
-  const productList=useSelector(state=>state.productList)
+  const productList =useSelector(state=>state.productList)
   const{loading,error,products}=productList
 
   const productDelete=useSelector(state=>state.productDelete)
@@ -52,10 +52,13 @@ const ProductListScreen = () => {
            
         </Col>
         <Col className="float-right">
+        <LinkContainer to="/admin/createProduct">
+        
             <Button className='my-3' >
               <i className='fas fa-plus'></i>
               create product
             </Button>
+            </LinkContainer>
         </Col>
      </Row>
 
@@ -67,10 +70,10 @@ const ProductListScreen = () => {
         <Table striped bordered hover responsive className="table-sm">
           <thead>
             <tr id="head">
-              <th>Id</th>
+              <th>Image</th>
               <th>Name</th>
               <th>price</th>
-              <th>category</th>
+            
               <th>brand</th>
               <th>edit</th>
               <th>delete</th>
@@ -79,10 +82,9 @@ const ProductListScreen = () => {
           <tbody>
             {products.map((product) => (
               <tr key={product._id}>
-                <td>{product._id}</td>
-                <td>{product.name}</td>
-                <td>{product.price}</td>
-                <td>{product.category}</td>
+              <td> <Image src={product.image.url} alt={product.name} fluid rounded  width={100} height={100}/></td>
+               <td>{product.name}</td>
+               <td>{product.price}</td>
                
                 <td>{product.brand}</td>
                 <td>

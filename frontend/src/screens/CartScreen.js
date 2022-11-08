@@ -23,6 +23,7 @@ const CartScreen = () => {
 
 
   useEffect(() => {
+    
   if(proId.length>1){
     dispatch(addToCart(proId,qty))
   }
@@ -58,7 +59,7 @@ const CartScreen = () => {
            <ListGroup.Item key={item.product}>
              <Row>
                <Col md={2}>
-               <Image src={process.env.PUBLIC_URL + `${item.image}`} alt={item.name} fluid rounded/>
+               <Image src={item.image} alt={item.name} fluid rounded/>
 
                </Col>
                <Col md={3}>
@@ -109,7 +110,7 @@ const CartScreen = () => {
        </ListGroup.Item>
        <ListGroup.Item>
         
-       <Button onClick={checkOutHandler} type='submit' disabled={cartItems.length==0} className='btn-block'> checkout
+       <Button onClick={checkOutHandler} type='submit' disabled={cartItems.length===0} className='btn-block'> checkout
      </Button>
        </ListGroup.Item>
       </ListGroup>
